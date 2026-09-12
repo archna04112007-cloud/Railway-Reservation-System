@@ -1,102 +1,132 @@
-import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        Scanner sc = new Scanner(System.in);
-        ReservationManager manager = new ReservationManager();
+        // ==========================================
+        // PART 1: TRAIN + ROUTE + STATION + SCHEDULE
+        // ==========================================
 
-        System.out.println("====================================");
-        System.out.println("       SMART RAILWAY SYSTEM");
-        System.out.println("====================================");
+        System.out.println("==========================================");
+        System.out.println("   PART 1: TRAIN MANAGEMENT TEST");
+        System.out.println("==========================================");
 
-
-        System.out.println("\n--- Passenger Registration ---");
-
-        System.out.print("Enter passenger name: ");
-        String name = sc.nextLine();
-
-        System.out.print("Enter age: ");
-        int age = sc.nextInt();
-        sc.nextLine();
-
-        System.out.print("Enter gender: ");
-        String gender = sc.nextLine();
-
-        System.out.print("Enter phone number: ");
-        String phone = sc.nextLine();
-
-        System.out.print("Enter email: ");
-        String email = sc.nextLine();
-
-        System.out.print("Enter passenger ID: ");
-        String passengerId = sc.nextLine();
-
-        System.out.print("Enter ID proof: ");
-        String idProof = sc.nextLine();
-
-        Passenger passenger = new Passenger(
-                name,
-                age,
-                gender,
-                phone,
-                email,
-                passengerId,
-                idProof
+        // Create stations
+        Station delhi = new Station(
+                "NDLS",
+                "New Delhi",
+                "Delhi"
         );
 
-        manager.registerPassenger(passenger);
-
-    
-        System.out.println("\n--- Train Details ---");
-
-        System.out.print("Enter train name: ");
-        String trainName = sc.nextLine();
-
-        System.out.print("Enter train number: ");
-        String trainNumber = sc.nextLine();
-
-        System.out.print("Enter source station: ");
-        String source = sc.nextLine();
-
-        System.out.print("Enter destination station: ");
-        String destination = sc.nextLine();
-
-        System.out.print("Enter journey date: ");
-        String journeyDate = sc.nextLine();
-
-        
-        System.out.print("Enter seat number: ");
-        String seatNumber = sc.nextLine();
-
-        System.out.print("Enter fare: ");
-        double fare = sc.nextDouble();
-
-        
-        System.out.println("\n--- Making Reservation ---");
-
-        Reservation reservation = manager.makeReservation(
-                passenger,
-                trainName,
-                trainNumber,
-                source,
-                destination,
-                journeyDate,
-                seatNumber,
-                fare
+        Station agra = new Station(
+                "AGRA",
+                "Agra Cantt",
+                "Agra"
         );
 
-        
-        System.out.println("\n--- Reservation Details ---");
-        reservation.displayReservation();
+        Station pune = new Station(
+                "PUNE",
+                "Pune Junction",
+                "Pune"
+        );
 
-        
-        Ticket ticket = new Ticket(reservation);
+        // Create route
+        Route route = new Route(
+                "R001",
+                delhi,
+                pune
+        );
 
-        System.out.println("\n--- Ticket Generated ---");
-        ticket.displayTicket();
+        // Add Agra between Delhi and Pune
+        route.addStation(agra);
 
-        sc.close();
+        // Display route
+        route.displayRoute();
+
+        // Create schedule
+        Schedule schedule = new Schedule(
+                LocalDate.of(2026, 9, 20),
+                LocalTime.of(6, 0),
+                LocalTime.of(18, 30)
+        );
+
+        // Create train
+        Train train1 = new Train(
+                12951,
+                "Rajdhani Express",
+                "Express",
+                route,
+                schedule
+        );
+
+        // Display train
+        System.out.println();
+        train1.displayTrainDetails();
+
+
+        // ==========================================
+        // PART 2: PLATFORM ALLOCATION
+        // ==========================================
+
+        System.out.println("\n==========================================");
+        System.out.println("   PART 2: PLATFORM ALLOCATION TEST");
+        System.out.println("==========================================");
+
+        // Create Platform Manager
+        PlatformManager manager = new PlatformManager();
+
+        // Create platforms at Pune
+        Platform platform1 = new Platform(1, "PUNE");
+        Platform platform2 = new Platform(2, "PUNE");
+        Platform platform3 = new Platform(3, "PUNE");
+
+        // Add platforms
+        manager.addPlatform(platform1);
+        manager.addPlatform(platform2);
+        manager.addPlatform(platform3);
+
+        // Create second train
+        Train train2 = new Train(
+                12952,
+                "Superfast Express",
+                "Superfast",
+                route,
+                schedule
+        );
+
+        // Allocate first train
+        System.out.println("\nAllocating Train 12951...");
+
+        manager.allocatePlatform(
+                train1,
+                "PUNE",
+                LocalTime.of(10, 0),
+                LocalTime.of(10, 30),
+                LocalDate.of(2026, 9, 20)
+        );
+
+        // Allocate second train
+        // This overlaps with Train 12951
+        System.out.println("\nAllocating Train 12952...");
+
+        manager.allocatePlatform(
+                train2,
+                "PUNE",
+                LocalTime.of(10, 15),
+                LocalTime.of(10, 45),
+                LocalDate.of(2026, 9, 20)
+        );
+
+        // Display platforms
+        manager.displayPlatforms();
+
+        // Display allocations
+        manager.displayAllocations();
+
+        System.out.println("\n==========================================");
+        System.out.println("        ALL TESTS COMPLETED");
+        System.out.println("==========================================");
     }
 }
